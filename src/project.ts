@@ -76,7 +76,7 @@ export class Project {
    *
    * @returns A mapping of file names to their assets.
    */
-  getAssets(): Record<string, ArrayBufferLike> {
+  getAssets(): Record<string, ReadableStream<Uint8Array>> {
     if (!this.stage) {
       throw new Error("Project.getAssets called without added stage");
     }
@@ -109,7 +109,7 @@ export class Project {
     };
   }
 
-  async zip(): Promise<Blob> {
+  async zip(): Promise<ReadableStream<Uint8Array>> {
     const blobWriter = new BlobWriter();
     const zipWriter = new ZipWriter(blobWriter);
     const files = this.getFiles();
@@ -119,7 +119,7 @@ export class Project {
       })
     );
     await zipWriter.close();
-    return await blobWriter.getData();
+    return (await blobWriter.getData()).stream();
   }
 }
 
