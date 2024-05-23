@@ -7,6 +7,17 @@ export class Script {
   private _blocks: Record<string, IndividualBlock> = {};
   private _first: string | null = null;
   private _last: string | null = null;
+  private _shadow: boolean;
+  private _topLevel: boolean;
+
+  /**
+   * Create a script.
+   * @param shadow Whether the script should be a shadow script.
+   */
+  constructor({ shadow = false, topLevel = false }: ScriptOptions = {}) {
+    this._shadow = shadow;
+    this._topLevel = topLevel;
+  }
 
   /**
    * Add a new {@link Block} to the script.
@@ -21,14 +32,12 @@ export class Script {
       ...this._blocks,
       ...Object.fromEntries(
         Object.entries(block.blocks).map(([opcode, individualBlock]) => {
-          if (opcode !== block.base) {
-            return [opcode, individualBlock];
-          }
           return [
             opcode,
             {
               ...individualBlock,
-              parent: this._last,
+              shadow: this._shadow,
+              ...(opcode === block.base ? { parent: this._last } : {}),
             },
           ];
         })
@@ -37,7 +46,10 @@ export class Script {
     if (this._last) {
       this._blocks[this._last].next = block.base;
     }
-    this._first ??= block.base;
+    if (!this.first) {
+      this._first = block.base;
+      this._blocks[block.base].topLevel = this._topLevel;
+    }
     this._last = block.base;
     return this;
   }
@@ -64,6 +76,22 @@ export class Script {
   }
 }
 
+/** Options passed to the {@link Script} constructor. */
+export type ScriptOptions = {
+  /**
+   * Whether all scripts should have the shadow property set on them.
+   *
+   * Defaults to false.
+   */
+  shadow?: boolean;
+  /**
+   * Whether the script is at the top level.
+   *
+   * Defaults to false.
+   */
+  topLevel?: boolean;
+};
+
 /**
  * Creates a {@link Block} which may depend on other blocks. This needs to be
  * passed into a {@link Script} for Scratch usage.
@@ -88,6 +116,10 @@ export const block = (
         ),
         parent: null,
         next: null,
+        x: 0,
+        y: 0,
+        shadow: false,
+        topLevel: false,
       },
     },
     base: baseOpcode,
@@ -142,4 +174,8 @@ export type IndividualBlock = {
   fields: Record<string, [string, null]>;
   parent: string | null;
   next: string | null;
+  x: number;
+  y: number;
+  shadow: boolean;
+  topLevel: boolean;
 };
