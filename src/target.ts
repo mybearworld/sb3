@@ -84,6 +84,8 @@ export class Target {
    */
   public sounds: Sound[] = [];
   private _scripts: Record<string, IndividualBlock> = {};
+  private _variables: Record<string, [string, string | number]> = {};
+  private _lists: Record<string, [string, string[]]> = {};
 
   /**
    * Create a new target.
@@ -135,6 +137,30 @@ export class Target {
   }
 
   /**
+   * Create a new variable.
+   * @param name The name of the new variable.
+   * @param initialValue The initial value of the new variable.
+   * @returns The ID of the new variable for use in blocks.
+   */
+  variable(name: string, initialValue: string | number): string {
+    const id = crypto.randomUUID();
+    this._variables[id] = [name, initialValue];
+    return id;
+  }
+
+  /**
+   * Create a new list.
+   * @param name The name of the new list.
+   * @param initialValue The initial value of the new list.
+   * @returns The ID of the new list for use in blocks.
+   */
+  list(name: string, initialValue: string[]): string {
+    const id = crypto.randomUUID();
+    this._lists[id] = [name, initialValue];
+    return id;
+  }
+
+  /**
    * Converts the target into the sprite.json format Scratch can understand.
    *
    * While this method will work for stages, the resulting output has to be
@@ -163,8 +189,8 @@ export class Target {
       rotationStyle: this.rotationStyle,
       layerOrder: this.isStage ? 0 : this.layerOrder,
       visible: this.visible,
-      variables: {},
-      lists: {},
+      variables: this._variables,
+      lists: this._lists,
       broadcasts: {},
       blocks: this._scripts,
       comments: {},
@@ -215,8 +241,8 @@ export type JSONTarget = {
   rotationStyle: RotationStyle;
   layerOrder: number;
   visible: boolean;
-  variables: unknown;
-  lists: unknown;
+  variables: Record<string, [string, string | number]>;
+  lists: Record<string, [string, string[]]>;
   broadcasts: unknown;
   blocks: Record<string, IndividualBlock>;
   comments: unknown;
