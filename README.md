@@ -3,13 +3,9 @@
 A JavaScript library to create and export Scratch projects and sprites.
 
 ```ts
-import { Target } from "./target.ts";
-import { block, Script } from "./script.ts";
-import { Project } from "./project.ts";
+import { block, Script, Project, Target } from "@mbw/sb3";
 
-const EMPTY_SVG = new TextEncoder().encode(
-  String.raw`<svg version="1.1" width="0" height="0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"></svg>`
-);
+const EMPTY_SVG = (await Deno.open("./empty.svg")).readable;
 
 const project = new Project();
 
@@ -20,10 +16,10 @@ sprite.costumes.push({
   type: "svg",
 });
 sprite.addScript(
-  new Script().push(
+  new Script({ topLevel: true }).push(block("event_whenflagclicked")).push(
     block("looks_sayforsecs", {
       inputs: {
-        MESSAGE: { type: 10, value: "Hello!" },
+        MESSAGE: { type: 10, value: "Hello, world!" },
         SECS: { type: 4, value: "2" },
       },
     })
@@ -39,5 +35,6 @@ stage.costumes.push({
 });
 project.addTarget(stage);
 
-Deno.writeFile("project.sb3", await project.zip());
+const zip = await project.zip();
+await Deno.writeFile("project.sb3", zip);
 ```
