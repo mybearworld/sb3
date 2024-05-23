@@ -1,5 +1,5 @@
 import type { JSONTarget, Target } from "./target.ts";
-import { BlobWriter, ZipWriter } from "@zip-js/zip-js";
+import { BlobWriter, ZipWriter, terminateWorkers } from "@zip-js/zip-js";
 import { idFor } from "./costumeIds.ts";
 
 /**
@@ -76,10 +76,7 @@ export class Project {
    *
    * @returns A mapping of file names to their assets.
    */
-  getAssets(): Record<
-    string,
-    ReadableStream<Uint8Array> | Uint8Array | ArrayBuffer
-  > {
+  getAssets(): Record<string, ReadableStream<Uint8Array>> {
     if (!this.stage) {
       throw new Error("Project.getAssets called without added stage");
     }
@@ -101,10 +98,7 @@ export class Project {
    *
    * @returns A mapping of file names to their file contents.
    */
-  getFiles(): Record<
-    string,
-    ReadableStream<Uint8Array> | Uint8Array | ArrayBuffer
-  > {
+  getFiles(): Record<string, ReadableStream<Uint8Array>> {
     if (!this.stage) {
       throw new Error("Project.getFiles called without added stage");
     }
@@ -130,24 +124,11 @@ export class Project {
     const files = this.getFiles();
     await Promise.all(
       Object.entries(files).map(([fileName, content]) => {
-        return zipWriter.add(
-          fileName,
-          content instanceof ReadableStream
-            ? content
-            : new ReadableStream({
-                start(controller) {
-                  controller.enqueue(
-                    content instanceof Uint8Array
-                      ? content
-                      : new Uint8Array(content)
-                  );
-                  controller.close();
-                },
-              })
-        );
+        return zipWriter.add(fileName, content);
       })
     );
     await zipWriter.close();
+    await terminateWorkers();
     return (await blobWriter.getData()).stream();
   }
 }

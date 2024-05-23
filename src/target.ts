@@ -292,7 +292,7 @@ export type Costume = {
   /** The file type of the costume. */
   type: "svg" | "png";
   /** The read file of the costume. */
-  file: ReadableStream<Uint8Array> | Uint8Array | ArrayBuffer;
+  file: ReadableStream<Uint8Array>;
   /** The rotation center of the costume. Defaults to [0, 0] */
   rotationCenter?: [number, number];
 };
@@ -306,5 +306,5 @@ export type Sound = {
   /** The file type of the sound. */
   type: "wav" | "mp3";
   /** The read file of the sound. */
-  file: ReadableStream<Uint8Array> | Uint8Array | ArrayBuffer;
+  file: ReadableStream<Uint8Array>;
 };
