@@ -59,8 +59,8 @@ export class Project {
         this.stage.toJSON(),
         ...this.targets.map((target) => target.toJSON()),
       ],
-      monitors: {},
-      extensions: {},
+      monitors: [],
+      extensions: [],
       meta: {
         semver: "3.0.0",
         vm: "2.3.0",

@@ -36,9 +36,9 @@ export class Target {
   public y = 0;
   /** The initial size of the sprite.
    *
-   * Does nothing on a stage. Defaults to 0.
+   * Does nothing on a stage. Defaults to 100.
    */
-  public size = 0;
+  public size = 100;
   /**
    * The initial direction of the sprite.
    *
