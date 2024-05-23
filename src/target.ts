@@ -157,7 +157,7 @@ export class Target {
       x: this.x,
       y: this.y,
       name: this._name ?? "Stage",
-      size: this.size,
+      size: this.isStage ? 100 : this.size,
       direction: this.direction,
       draggable: this.draggable,
       rotationStyle: this.rotationStyle,
