@@ -1,4 +1,5 @@
 import type { JSONTarget, Target } from "./target.ts";
+import { idFor } from "./costumeIds.ts";
 
 /**
  * A Scratch project.
@@ -65,6 +66,28 @@ export class Project {
         agent: this.userAgent,
       },
     };
+  }
+
+  /**
+   * Returns the file names and assets necessary to produce a valid sb3 file
+   * based on the targets.
+   *
+   * @throws If there is no added stage.
+   *
+   * @returns A mapping of file names to their assets.
+   */
+  getAssets(): Record<string, ArrayBufferLike> {
+    if (!this.stage) {
+      throw new Error("Project.getAssets called without added stage");
+    }
+    return Object.fromEntries(
+      [this.stage, ...this.targets].flatMap((target) =>
+        [...target.costumes, ...target.sounds].map((costume) => [
+          `${idFor(costume.file)}.${costume.type}`,
+          costume.file,
+        ])
+      )
+    );
   }
 }
 

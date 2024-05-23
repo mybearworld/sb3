@@ -1,4 +1,5 @@
 import type { Script, IndividualBlock } from "./script.ts";
+import { idFor } from "./costumeIds.ts";
 
 /**
  * A Scratch target, being either a sprite or the stage.
@@ -70,6 +71,18 @@ export class Target {
    * Does nothing on a stage. Defaults to true.
    */
   public visible = true;
+  /**
+   * The costumes of the sprite.
+   *
+   * One is necessary to convert the target to JSON. Defaults to [].
+   */
+  public costumes: Costume[] = [];
+  /**
+   * The sounds of the sprite.
+   *
+   * Defaults to [].
+   */
+  public sounds: Sound[] = [];
   private _scripts: Record<string, IndividualBlock> = {};
 
   /**
@@ -128,6 +141,8 @@ export class Target {
    * modified and added to a {@link Project} in order for it to be useful. This
    * is automatically handled by Project.
    *
+   * @throws If there isn't at least one costume.
+   *
    * @example
    * const target = new Target("Scratch Cat");
    * target.toJSON(); // { isStage: false, x: 0, y: 0, ... }
@@ -150,8 +165,30 @@ export class Target {
       broadcasts: {},
       blocks: this._scripts,
       comments: {},
-      costumes: [],
-      sounds: [],
+      costumes: this.costumes.map((costume) => {
+        const id = idFor(costume.file);
+        return {
+          name: costume.name,
+          bitmapResolution: costume.type === "svg" ? 1 : 2,
+          dataFormat: costume.type,
+          assetId: id,
+          md5ext: `${id}.${costume.type}`,
+          rotationCenterX: costume.rotationCenter?.[0] ?? 0,
+          rotationCenterY: costume.rotationCenter?.[1] ?? 0,
+        };
+      }),
+      sounds: this.sounds.map((sound) => {
+        const id = idFor(sound.file);
+        return {
+          name: sound.name,
+          dataFormat: sound.type,
+          assetId: id,
+          md5ext: `${id}.${sound.type}`,
+          format: "",
+          rate: 0,
+          sampleCount: 0,
+        };
+      }),
     };
   }
 }
@@ -180,6 +217,48 @@ export type JSONTarget = {
   broadcasts: unknown;
   blocks: Record<string, IndividualBlock>;
   comments: unknown;
-  costumes: unknown;
-  sounds: unknown;
+  costumes: {
+    name: string;
+    bitmapResolution: 1 | 2;
+    dataFormat: "svg" | "png";
+    assetId: string;
+    md5ext: string;
+    rotationCenterX: number;
+    rotationCenterY: number;
+  }[];
+  sounds: {
+    name: string;
+    assetId: string;
+    dataFormat: "wav" | "mp3";
+    format: string;
+    rate: number;
+    sampleCount: number;
+    md5ext: string;
+  }[];
+};
+
+/**
+ * A costume added to a {@link Sprite}.
+ */
+export type Costume = {
+  /** The name of the costume. */
+  name: string;
+  /** The file type of the costume. */
+  type: "svg" | "png";
+  /** The read file of the costume. */
+  file: ArrayBufferLike;
+  /** The rotation center of the costume. Defaults to [0, 0] */
+  rotationCenter?: [number, number];
+};
+
+/**
+ * A sound added to a {@link Sprite}.
+ */
+export type Sound = {
+  /** The name of the sound. */
+  name: string;
+  /** The file type of the sound. */
+  type: "wav" | "mp3";
+  /** The read file of the sound. */
+  file: ArrayBufferLike;
 };
