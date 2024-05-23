@@ -120,6 +120,10 @@ export class Project {
     };
   }
 
+  /**
+   * Creates an sb3 file from the project.
+   * @returns The resulting zip file as a stream.
+   */
   async zip(): Promise<ReadableStream<Uint8Array>> {
     const blobWriter = new BlobWriter();
     const zipWriter = new ZipWriter(blobWriter);
