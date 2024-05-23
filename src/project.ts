@@ -76,7 +76,10 @@ export class Project {
    *
    * @returns A mapping of file names to their assets.
    */
-  getAssets(): Record<string, ReadableStream<Uint8Array>> {
+  getAssets(): Record<
+    string,
+    ReadableStream<Uint8Array> | Uint8Array | ArrayBuffer
+  > {
     if (!this.stage) {
       throw new Error("Project.getAssets called without added stage");
     }
@@ -98,7 +101,10 @@ export class Project {
    *
    * @returns A mapping of file names to their file contents.
    */
-  getFiles(): Record<string, ReadableStream<Uint8Array>> {
+  getFiles(): Record<
+    string,
+    ReadableStream<Uint8Array> | Uint8Array | ArrayBuffer
+  > {
     if (!this.stage) {
       throw new Error("Project.getFiles called without added stage");
     }
@@ -120,7 +126,21 @@ export class Project {
     const files = this.getFiles();
     await Promise.all(
       Object.entries(files).map(([fileName, content]) => {
-        return zipWriter.add(fileName, content);
+        return zipWriter.add(
+          fileName,
+          content instanceof ReadableStream
+            ? content
+            : new ReadableStream({
+                start(controller) {
+                  controller.enqueue(
+                    content instanceof Uint8Array
+                      ? content
+                      : new Uint8Array(content)
+                  );
+                  controller.close();
+                },
+              })
+        );
       })
     );
     await zipWriter.close();

@@ -8,9 +8,14 @@
  * @private
  */
 
-const ids = new Map<ReadableStream<Uint8Array>, string>();
+const ids = new Map<
+  ReadableStream<Uint8Array> | Uint8Array | ArrayBuffer,
+  string
+>();
 
-export const idFor = (file: ReadableStream<Uint8Array>) => {
+export const idFor = (
+  file: ReadableStream<Uint8Array> | Uint8Array | ArrayBuffer
+) => {
   const got = ids.get(file);
   if (got) {
     return got;
