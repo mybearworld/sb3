@@ -1,4 +1,5 @@
 import type { JSONTarget, Target } from "./target.ts";
+import { BlobWriter, ZipWriter } from "@zip-js/zip-js";
 import { idFor } from "./costumeIds.ts";
 
 /**
@@ -69,8 +70,7 @@ export class Project {
   }
 
   /**
-   * Returns the file names and assets necessary to produce a valid sb3 file
-   * based on the targets.
+   * Returns the file names and contents of the assets of every target.
    *
    * @throws If there is no added stage.
    *
@@ -88,6 +88,38 @@ export class Project {
         ])
       )
     );
+  }
+
+  /**
+   * Returns the file names and contents necessary to produce the sb3 file of
+   * this project.
+   *
+   * @throws If there is no added stage.
+   *
+   * @returns A mapping of file names to their file contents.
+   */
+  getFiles(): Record<string, ArrayBufferLike> {
+    if (!this.stage) {
+      throw new Error("Project.getFiles called without added stage");
+    }
+    const textEncoder = new TextEncoder();
+    return {
+      ...this.getAssets(),
+      "project.json": textEncoder.encode(JSON.stringify(this)),
+    };
+  }
+
+  async zip(): Promise<Blob> {
+    const blobWriter = new BlobWriter();
+    const zipWriter = new ZipWriter(blobWriter);
+    const files = this.getFiles();
+    await Promise.all(
+      Object.entries(files).map(([fileName, content]) => {
+        return zipWriter.add(fileName, new Blob([content]).stream());
+      })
+    );
+    await zipWriter.close();
+    return await blobWriter.getData();
   }
 }
 

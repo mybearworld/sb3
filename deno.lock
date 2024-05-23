@@ -1,0 +1,19 @@
+{
+  "version": "3",
+  "packages": {
+    "specifiers": {
+      "jsr:@zip-js/zip-js@^2.7.44": "jsr:@zip-js/zip-js@2.7.44"
+    },
+    "jsr": {
+      "@zip-js/zip-js@2.7.44": {
+        "integrity": "5579d2a2c6438e459aa9ae11e16b07cc76e1cdbb5901f52a446eda72eb0c9dca"
+      }
+    }
+  },
+  "remote": {},
+  "workspace": {
+    "dependencies": [
+      "jsr:@zip-js/zip-js@^2.7.44"
+    ]
+  }
+}
