@@ -86,6 +86,7 @@ export class Target {
   private _scripts: Record<string, IndividualBlock> = {};
   private _variables: Record<string, [string, string | number]> = {};
   private _lists: Record<string, [string, string[]]> = {};
+  private _broadcasts: Record<string, string> = {};
 
   /**
    * Create a new target.
@@ -161,6 +162,21 @@ export class Target {
   }
 
   /**
+   * Create a new broadcast.
+   * @param name The name of the new broadcast.
+   * @returns The ID of the new broadcast for use in blocks.
+   * @throws If called on a sprite.
+   */
+  broadcast(name: string): string {
+    if (!this.isStage) {
+      throw new Error("Target.isStage called on a sprite.");
+    }
+    const id = crypto.randomUUID();
+    this._broadcasts[id] = name;
+    return id;
+  }
+
+  /**
    * Converts the target into the sprite.json format Scratch can understand.
    *
    * While this method will work for stages, the resulting output has to be
@@ -175,6 +191,7 @@ export class Target {
    * JSON.stringify(target); // '{"isStage":false,"x":0,...}'
    */
   toJSON(): JSONTarget {
+    this.costumes.length = 1;
     if (this.costumes.length === 0) {
       throw new Error("Target.toJSON called with a target without costumes");
     }
@@ -191,7 +208,7 @@ export class Target {
       visible: this.visible,
       variables: this._variables,
       lists: this._lists,
-      broadcasts: {},
+      broadcasts: this._broadcasts,
       blocks: this._scripts,
       comments: {},
       costumes: this.costumes.map((costume) => {
@@ -243,7 +260,7 @@ export type JSONTarget = {
   visible: boolean;
   variables: Record<string, [string, string | number]>;
   lists: Record<string, [string, string[]]>;
-  broadcasts: unknown;
+  broadcasts: Record<string, string>;
   blocks: Record<string, IndividualBlock>;
   comments: unknown;
   costumes: {
