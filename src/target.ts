@@ -149,6 +149,9 @@ export class Target {
    * JSON.stringify(target); // '{"isStage":false,"x":0,...}'
    */
   toJSON(): JSONTarget {
+    if (this.costumes.length === 0) {
+      throw new Error("Target.toJSON called with a target without costumes");
+    }
     return {
       isStage: this.isStage,
       x: this.x,
