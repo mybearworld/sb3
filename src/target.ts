@@ -124,6 +124,7 @@ export class Target {
       isStage: this.isStage,
       x: this.x,
       y: this.y,
+      name: this._name ?? "Stage",
       size: this.size,
       direction: this.direction,
       draggable: this.draggable,
@@ -153,6 +154,7 @@ export type JSONTarget = {
   isStage: boolean;
   x: number;
   y: number;
+  name: string;
   size: number;
   direction: number;
   draggable: boolean;
