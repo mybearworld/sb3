@@ -5,7 +5,7 @@ A JavaScript library to create and export Scratch projects and sprites.
 ```ts
 import { block, Script, Project, Target } from "@mbw/sb3";
 
-using EMPTY_FILE = Deno.open("./empty.svg")
+using EMPTY_FILE = Deno.open("./empty.svg");
 const EMPTY_SVG = EMPTY_FILE.readable;
 
 const project = new Project();
