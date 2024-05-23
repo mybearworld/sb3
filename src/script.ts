@@ -132,7 +132,9 @@ export type Block = {
 };
 
 /**
- * An individual block that is part of a {@link Block}.
+ * An individual block.
+ *
+ * This is also the representation of a block in the project.json format.
  */
 export type IndividualBlock = {
   opcode: string;

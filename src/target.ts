@@ -1,3 +1,5 @@
+import type { Script, IndividualBlock } from "./script.ts";
+
 /**
  * A Scratch target, being either a sprite or the stage.
  *
@@ -68,6 +70,7 @@ export class Target {
    * Does nothing on a stage. Defaults to true.
    */
   public visible = true;
+  private _scripts: Record<string, IndividualBlock> = {};
 
   /**
    * Create a new target.
@@ -108,6 +111,17 @@ export class Target {
   }
 
   /**
+   * Adds a new {@link Script} to the target.
+   * @param script The script to add.
+   */
+  addScript(script: Script) {
+    this._scripts = {
+      ...this._scripts,
+      ...script.blocks,
+    };
+  }
+
+  /**
    * Converts the target into the sprite.json format Scratch can understand.
    *
    * While this method will work for stages, the resulting output has to be
@@ -134,7 +148,7 @@ export class Target {
       variables: {},
       lists: {},
       broadcasts: {},
-      blocks: {},
+      blocks: this._scripts,
       comments: {},
       costumes: [],
       sounds: [],
@@ -164,7 +178,7 @@ export type JSONTarget = {
   variables: unknown;
   lists: unknown;
   broadcasts: unknown;
-  blocks: unknown;
+  blocks: Record<string, IndividualBlock>;
   comments: unknown;
   costumes: unknown;
   sounds: unknown;
