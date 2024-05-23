@@ -161,7 +161,7 @@ export class Target {
       direction: this.direction,
       draggable: this.draggable,
       rotationStyle: this.rotationStyle,
-      layerOrder: this.layerOrder,
+      layerOrder: this.isStage ? 0 : this.layerOrder,
       visible: this.visible,
       variables: {},
       lists: {},

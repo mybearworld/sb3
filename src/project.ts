@@ -98,14 +98,19 @@ export class Project {
    *
    * @returns A mapping of file names to their file contents.
    */
-  getFiles(): Record<string, ArrayBufferLike> {
+  getFiles(): Record<string, ReadableStream<Uint8Array>> {
     if (!this.stage) {
       throw new Error("Project.getFiles called without added stage");
     }
     const textEncoder = new TextEncoder();
     return {
       ...this.getAssets(),
-      "project.json": textEncoder.encode(JSON.stringify(this)),
+      "project.json": new ReadableStream({
+        start: (controller) => {
+          controller.enqueue(textEncoder.encode(JSON.stringify(this)));
+          controller.close();
+        },
+      }),
     };
   }
 
@@ -115,7 +120,7 @@ export class Project {
     const files = this.getFiles();
     await Promise.all(
       Object.entries(files).map(([fileName, content]) => {
-        return zipWriter.add(fileName, new Blob([content]).stream());
+        return zipWriter.add(fileName, content);
       })
     );
     await zipWriter.close();
