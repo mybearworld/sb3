@@ -98,6 +98,150 @@ export type ScriptOptions = {
  * @param opcode The opcode of the block.
  * @param options The inputs and fields of the block.
  * @returns The new block.
+ *
+ * @example
+ * Basic block
+ *
+ * ```
+ * block("event_whenflagclicked")
+ * ```
+ *
+ * This represents a block with the opcode "event_whenflagclicked", and no
+ * inputs or fields.
+ *
+ * ```json
+ * {
+ *   "opcode": "event_whenflagclicked",
+ *   "inputs": {},
+ *   "fields": {},
+ *   ...
+ * }
+ * ```
+ *
+ * @example
+ * Block with inputs
+ *
+ * ```
+ * block("motion_movesteps", {
+ *   inputs: { STEPS: { type: 4, value: "10" } },
+ * })
+ * ```
+ *
+ * This represents a block with the opcode "motion_movesteps", no fields, and
+ * one input named STEPS with the type 4 (i.e. a number), and the value "10".
+ *
+ * ```json
+ * {
+ *   "opcode": "motion_movesteps",
+ *   "inputs": { "STEPS": [1, [4, "10"]] },
+ *   "fields": {},
+ *   ...
+ * }
+ * ```
+ *
+ * @example
+ * Block with fields
+ *
+ * ```
+ * block("looks_seteffectto", {
+ *   inputs: { VALUE: { type: 4, value: "25" } },
+ *   fields: { EFFECT: "COLOR" },
+ * })
+ * ```
+ *
+ * This represents a block with the opcode "looks_seteffectto", an input with
+ * the type 4 (i.e. a number), ant the value 25, and a field named EFFECT with
+ * the value of COLOR.
+ *
+ * ```json
+ * {
+ *   "opcode": "looks_seteffectto",
+ *   "inputs": { "VALUE": [1, [4, "25"]] },
+ *   "fields": { "EFFECT": ["COLOR", null] },
+ *   ...
+ * }
+ * ```
+ *
+ * @example
+ * Block with a menu
+ *
+ * ```
+ * block("sound_playuntildone", {
+ *   inputs: {
+ *     SOUND_MENU: {
+ *       value: new Script({ shadow: true }).push(
+ *         block("sound_sounds_menu", {
+ *           fields: { SOUND_MENU: "Meow" },
+ *         })
+ *       ),
+ *     },
+ *   },
+ * })
+ * ```
+ *
+ * This represents a block with the opcode "sound_playuntildone", that contains
+ * a script as an input. This script has the shadow property set to true, so
+ * you cannot pull it out of the outer block. It contains another block with
+ * the opcode sound_sounds_menu, with no inputs and a SOUND_MENU field set to
+ * "Meow".
+ *
+ * ```json
+ * "bdc71501-2d6c-49d2-b71d-093aa24a7ea3": {
+ *   "opcode": "sound_playuntildone",
+ *   "inputs": {
+ *     "SOUND_MENU": [2, "b08a37c9-34f9-461f-86fc-3b7606ba48f1"]
+ *   },
+ *   "fields": {},
+ *   "shadow": false,
+ *   ...
+ * },
+ * "b08a37c9-34f9-461f-86fc-3b7606ba48f1": {
+ *   "opcode": "sound_sounds_menu",
+ *   "inputs": {},
+ *   "fields": { "SOUND_MENU": ["Meow", null] },
+ *   "shadow": true,
+ *   ...
+ * }
+ * ```
+ *
+ * @example
+ * Block with a substack
+ *
+ * ```
+ * block("control_repeat", {
+ *   inputs: {
+ *     TIMES: { type: 6, value: "10" },
+ *     SUBSTACK: {
+ *       value: new Script().push(block("looks_show")),
+ *     },
+ *   },
+ * })
+ * ```
+ *
+ * This represents a block with the opcode "control_repeat", that contains
+ * a script as an input. This script has the shadow property set to false, as it
+ * is not intrinsic to the block. It contains another block with
+ * the opcode looks_show, with no inputs or fields.
+ *
+ * ```json
+ * "6e68f89a-67a3-4843-82ab-41989918d998": {
+ *   "opcode": "control_repeat",
+ *   "inputs": {
+ *     "TIMES": [1, [6, "10"]],
+ *     "SUBSTACK": [2, "86f78cfc-ea30-401e-80d8-83c8065ac9d3"]
+ *   },
+ *   "fields": {},
+ *   "shadow": false,
+ *   ...
+ * },
+ * "86f78cfc-ea30-401e-80d8-83c8065ac9d3": {
+ *   "opcode": "looks_show",
+ *   "inputs": {},
+ *   "fields": {},
+ *   "shadow": false,
+ *   ...
+ * },
+ * ```
  */
 export const block = (
   opcode: string,
