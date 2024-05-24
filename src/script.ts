@@ -36,7 +36,7 @@ export class Script {
             opcode,
             {
               ...individualBlock,
-              shadow: this._shadow,
+              ...(this._shadow ? { shadow: true } : {}),
               ...(opcode === block.base ? { parent: this._last } : {}),
             },
           ];
