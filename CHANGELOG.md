@@ -7,13 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
-
-- Removed module doc entirely in favor of README
-
 ## [0.1.1]
 
 ### Added
 
-- Added a changelog
-- Moved the main README into the mod.ts file
+- Improve the module documentation on JSR
