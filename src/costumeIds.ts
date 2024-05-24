@@ -8,8 +8,6 @@
  * @private
  */
 
-import { v4 as uuidv4 } from "uuid";
-
 const ids = new Map<ReadableStream<Uint8Array>, string>();
 
 export const idFor = (file: ReadableStream<Uint8Array>) => {
@@ -17,7 +15,7 @@ export const idFor = (file: ReadableStream<Uint8Array>) => {
   if (got) {
     return got;
   }
-  const id = uuidv4().replace(/-/g, "");
+  const id = crypto.randomUUID().replace(/-/g, "");
   ids.set(file, id);
   return id;
 };
