@@ -205,6 +205,33 @@ export type ScriptOptions = {
  * ```
  *
  * @example
+ * Block with another block put in an input
+ *
+ * ```
+ * block("motion_movesteps", {
+ *   inputs: {
+ *     STEPS: {
+ *       fallback: { type: 4, value: "10" },
+ *       value: new Script().push(
+ *         block("operator_add", {
+ *           inputs: {
+ *             NUM1: { type: 4, value: "2" },
+ *             NUM2: { type: 4, value: "3" },
+ *           },
+ *         })
+ *       ),
+ *     },
+ *   },
+ * })
+ * ```
+ *
+ * This represents a block with an opcode "motion_movesteps", with no field and
+ * an input called STEPS. This input has a value of a new script which has
+ * another block with the opcode "operator_add" inside of it. The STEPS input
+ * has a defined fallback, so if the script in the input is pulled out, there
+ * is a fallback value Scratch can show.
+ *
+ * @example
  * Block with a substack
  *
  * ```
@@ -286,7 +313,10 @@ export const block = (
       ...block.blocks,
       ...input.value.blocks,
     };
-    block.blocks[baseOpcode].inputs[name] = [2, input.value.first];
+    block.blocks[baseOpcode].inputs[name] =
+      "fallback" in input && input.fallback
+        ? [3, input.value.first, [input.fallback.type, input.fallback.value]]
+        : [2, input.value.first];
     return;
   });
   return block;
@@ -297,7 +327,11 @@ export type BlockOptions = {
   /**
    * The inputs that the block has. Defaults to none.
    */
-  inputs?: Record<string, { type: number; value: string } | { value: Script }>;
+  inputs?: Record<
+    string,
+    | { type: number; value: string }
+    | { value: Script; fallback?: { type: number; value: string } }
+  >;
   /**
    * The fields that the block has. Defaults to none.
    */
@@ -320,7 +354,10 @@ export type Block = {
  */
 export type IndividualBlock = {
   opcode: string;
-  inputs: Record<string, [1, [number, string]] | [2, string] /* | [3, ...] */>;
+  inputs: Record<
+    string,
+    [1, [number, string]] | [2, string] | [3, string, [number, string]]
+  >;
   fields: Record<string, [string, null]>;
   parent: string | null;
   next: string | null;
