@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid";
+
 /**
  * A script comprised of Scratch blocks.
  *
@@ -274,7 +276,7 @@ export type ScriptOptions = {
 export function block(opcode: string, options?: BlockOptions): Block {
   const inputs = options?.inputs ?? {};
   const fields = options?.fields ?? {};
-  const baseOpcode = crypto.randomUUID();
+  const baseOpcode = uuidv4();
   const block: Block = {
     blocks: {
       [baseOpcode]: {

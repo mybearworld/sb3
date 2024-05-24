@@ -2,18 +2,31 @@
   "version": "3",
   "packages": {
     "specifiers": {
-      "jsr:@zip-js/zip-js@^2.7.44": "jsr:@zip-js/zip-js@2.7.44"
+      "jsr:@zip-js/zip-js@^2.7.44": "jsr:@zip-js/zip-js@2.7.44",
+      "npm:@types/node": "npm:@types/node@18.16.19",
+      "npm:uuid": "npm:uuid@9.0.1"
     },
     "jsr": {
       "@zip-js/zip-js@2.7.44": {
         "integrity": "5579d2a2c6438e459aa9ae11e16b07cc76e1cdbb5901f52a446eda72eb0c9dca"
+      }
+    },
+    "npm": {
+      "@types/node@18.16.19": {
+        "integrity": "sha512-IXl7o+R9iti9eBW4Wg2hx1xQDig183jj7YLn8F7udNceyfkbn1ZxmzZXuak20gR40D7pIkIY1kYGx5VIGbaHKA==",
+        "dependencies": {}
+      },
+      "uuid@9.0.1": {
+        "integrity": "sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==",
+        "dependencies": {}
       }
     }
   },
   "remote": {},
   "workspace": {
     "dependencies": [
-      "jsr:@zip-js/zip-js@^2.7.44"
+      "jsr:@zip-js/zip-js@^2.7.44",
+      "npm:uuid"
     ]
   }
 }
