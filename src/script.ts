@@ -95,6 +95,7 @@ export type ScriptOptions = {
 /**
  * Creates a {@link Block} which may depend on other blocks. This needs to be
  * passed into a {@link Script} for Scratch usage.
+ *
  * @param opcode The opcode of the block.
  * @param options The inputs and fields of the block.
  * @returns The new block.
@@ -270,10 +271,9 @@ export type ScriptOptions = {
  * },
  * ```
  */
-export const block = (
-  opcode: string,
-  { inputs = {}, fields = {} }: BlockOptions = {}
-): Block => {
+export function block(opcode: string, options?: BlockOptions): Block {
+  const inputs = options?.inputs ?? {};
+  const fields = options?.fields ?? {};
   const baseOpcode = crypto.randomUUID();
   const block: Block = {
     blocks: {
@@ -320,7 +320,7 @@ export const block = (
     return;
   });
   return block;
-};
+}
 
 /** The options passed to the {@link block} function. */
 export type BlockOptions = {

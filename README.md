@@ -6,9 +6,6 @@ project (.sb3) files.
 > [!NOTE]
 > This package is not affiliated with Scratch or the Scratch foundation.
 
-> [!WARNING]
-> The .d.ts files for the block function are currently broken.
-
 ```ts
 import { block, Script, Project, Target } from "@mbw/sb3";
 
