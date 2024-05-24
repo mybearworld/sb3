@@ -133,6 +133,9 @@ export class Project {
   }
 }
 
+/**
+ * The project.json representation of a project.
+ */
 export type JSONProject = {
   targets: JSONTarget[];
   monitors: unknown;
