@@ -126,6 +126,12 @@ export const block = (
   };
   Object.entries(inputs).forEach(([name, input]) => {
     if (typeof input.value === "string") {
+      if (!("type" in input)) {
+        // needed for typescript
+        throw new Error(
+          "A string has been passed as a value, without any type."
+        );
+      }
       block.blocks[baseOpcode].inputs[name] = [1, [input.type, input.value]];
       return;
     }
@@ -147,7 +153,7 @@ export type BlockOptions = {
   /**
    * The inputs that the block has. Defaults to none.
    */
-  inputs?: Record<string, { type: number; value: string | Script }>;
+  inputs?: Record<string, { type: number; value: string } | { value: Script }>;
   /**
    * The fields that the block has. Defaults to none.
    */
