@@ -4,6 +4,6 @@
   "exports": "./mod.ts",
   "imports": {
     "@zip-js/zip-js": "jsr:@zip-js/zip-js@^2.7.44",
-    "uuid": "npm:uuid"
+    "uuid": "npm:uuid@9.0.1"
   }
 }
