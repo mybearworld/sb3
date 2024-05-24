@@ -1,6 +1,10 @@
 # @mbw/sb3
 
-A JavaScript library to create and export Scratch projects and sprites.
+Abstractions for creating and exporting [Scratch](https://scratch.mit.edu)
+project (.sb3) files.
+
+> [!NOTE]
+> This package is not affiliated with Scratch or the Scratch foundation.
 
 ```ts
 import { block, Script, Project, Target } from "@mbw/sb3";

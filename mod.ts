@@ -1,5 +1,6 @@
 /**
- * A JavaScript library to create and export Scratch projects and sprites.
+ * Abstractions for creating and exporting [Scratch](https://scratch.mit.edu)
+ * project files.
  * @module
  */
 
