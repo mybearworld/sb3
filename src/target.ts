@@ -169,7 +169,7 @@ export class Target {
    */
   broadcast(name: string): string {
     if (!this.isStage) {
-      throw new Error("Target.isStage called on a sprite.");
+      throw new Error("Target.broadcast called on a sprite.");
     }
     const id = generateID();
     this._broadcasts[id] = name;
