@@ -6,6 +6,7 @@
  * be md5 hashes
  *
  * @private
+ * @module
  */
 
 const ids = new Map<ReadableStream<Uint8Array>, string>();
@@ -15,7 +16,12 @@ export const idFor = (file: ReadableStream<Uint8Array>) => {
   if (got) {
     return got;
   }
-  const id = crypto.randomUUID().replace(/-/g, "");
+  const id = generateID();
   ids.set(file, id);
   return id;
 };
+
+export const generateID = () =>
+  Array.from({ length: 32 })
+    .map(() => "0123456789abcdef"[Math.floor(Math.random() * 16)])
+    .join("");

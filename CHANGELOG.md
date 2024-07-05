@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Compatibility with Node.JS and browsers by not using the `crypto.getRandomUUID` function
+
 ## [0.1.2] - 2024-05-24
 
 ### Added

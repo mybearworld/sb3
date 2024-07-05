@@ -1,3 +1,5 @@
+import { generateID } from "./ids.ts";
+
 /**
  * A script comprised of Scratch blocks.
  *
@@ -274,7 +276,7 @@ export type ScriptOptions = {
 export function block(opcode: string, options?: BlockOptions): Block {
   const inputs = options?.inputs ?? {};
   const fields = options?.fields ?? {};
-  const baseOpcode = crypto.randomUUID();
+  const baseOpcode = generateID();
   const block: Block = {
     blocks: {
       [baseOpcode]: {

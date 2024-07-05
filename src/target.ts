@@ -1,5 +1,5 @@
 import type { Script, IndividualBlock } from "./script.ts";
-import { idFor } from "./costumeIds.ts";
+import { generateID, idFor } from "./ids.ts";
 
 /**
  * A Scratch target, being either a sprite or the stage.
@@ -144,7 +144,7 @@ export class Target {
    * @returns The ID of the new variable for use in blocks.
    */
   variable(name: string, initialValue: string | number): string {
-    const id = crypto.randomUUID();
+    const id = generateID();
     this._variables[id] = [name, initialValue];
     return id;
   }
@@ -156,7 +156,7 @@ export class Target {
    * @returns The ID of the new list for use in blocks.
    */
   list(name: string, initialValue: string[]): string {
-    const id = crypto.randomUUID();
+    const id = generateID();
     this._lists[id] = [name, initialValue];
     return id;
   }
@@ -171,7 +171,7 @@ export class Target {
     if (!this.isStage) {
       throw new Error("Target.isStage called on a sprite.");
     }
-    const id = crypto.randomUUID();
+    const id = generateID();
     this._broadcasts[id] = name;
     return id;
   }

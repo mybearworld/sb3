@@ -1,6 +1,6 @@
 import type { JSONTarget, Target } from "./target.ts";
 import { BlobWriter, ZipWriter, terminateWorkers } from "@zip-js/zip-js";
-import { idFor } from "./costumeIds.ts";
+import { idFor } from "./ids.ts";
 
 /**
  * A Scratch project.
