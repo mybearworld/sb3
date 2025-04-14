@@ -5,11 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-### [Unreleased]
+### Unreleased
 
 - Allow setting fallback scripts (#1)
 
-## [0.1.4] - 2024-07-05
+## 0.1.4 - 2024-07-05
 
 ### Added
 
@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Error message of `Target.broadcast`
 
-## [0.1.2] - 2024-05-24
+## 0.1.2 - 2024-05-24
 
 ### Added
 
@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fixed the type definitions of the `block` function.
 
-## [0.1.1] - 2024-05-24
+## 0.1.1 - 2024-05-24
 
 ### Added
 
