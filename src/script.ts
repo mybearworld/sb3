@@ -311,14 +311,29 @@ export function block(opcode: string, options?: BlockOptions): Block {
     if (!input.value.first) {
       return;
     }
+    const maybeFallback =
+      "fallback" in input && input.fallback ? input.fallback : undefined;
     block.blocks = {
       ...block.blocks,
       ...input.value.blocks,
+      ...(maybeFallback instanceof Script ? maybeFallback.blocks : {}),
     };
-    block.blocks[baseOpcode].inputs[name] =
-      "fallback" in input && input.fallback
-        ? [3, input.value.first, [input.fallback.type, input.fallback.value]]
-        : [2, input.value.first];
+    if (
+      maybeFallback &&
+      maybeFallback instanceof Script &&
+      maybeFallback.first === null
+    ) {
+      throw new Error("Fallback script without a block inside");
+    }
+    block.blocks[baseOpcode].inputs[name] = maybeFallback
+      ? [
+          3,
+          input.value.first,
+          maybeFallback instanceof Script
+            ? maybeFallback.first!
+            : [maybeFallback.type, maybeFallback.value],
+        ]
+      : [2, input.value.first];
     return;
   });
   return block;
@@ -332,7 +347,7 @@ export type BlockOptions = {
   inputs?: Record<
     string,
     | { type: number; value: string }
-    | { value: Script; fallback?: { type: number; value: string } }
+    | { value: Script; fallback?: { type: number; value: string } | Script }
   >;
   /**
    * The fields that the block has. Defaults to none.
@@ -358,7 +373,7 @@ export type IndividualBlock = {
   opcode: string;
   inputs: Record<
     string,
-    [1, [number, string]] | [2, string] | [3, string, [number, string]]
+    [1, [number, string]] | [2, string] | [3, string, [number, string] | string]
   >;
   fields: Record<string, [string, null]>;
   parent: string | null;
