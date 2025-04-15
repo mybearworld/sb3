@@ -11,7 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Allow creating mutations (#2)
 
-### 0.1.5 - 2025-04-14
+## 0.1.5 - 2025-04-14
+
+### Added
 
 - Allow setting fallback scripts (#1)
 
