@@ -1,6 +1,6 @@
 {
   "name": "@mbw/sb3",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "exports": "./mod.ts",
   "imports": {
     "@zip-js/zip-js": "jsr:@zip-js/zip-js@^2.7.44"
