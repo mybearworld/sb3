@@ -284,7 +284,7 @@ export function block(opcode: string, options?: BlockOptions): Block {
         inputs: {},
         fields: Object.fromEntries(
           Object.entries(fields).map(([name, field]) => {
-            return [name, [field, null]];
+            return [name, Array.isArray(field) ? field : [field, null]];
           })
         ),
         parent: null,
@@ -374,7 +374,7 @@ export type BlockOptions = {
   /**
    * The fields that the block has. Defaults to none.
    */
-  fields?: Record<string, string>;
+  fields?: Record<string, string | [string, string]>;
   /**
    * Whether the block has a mutation has it to tell Scratch to (dis)allow
    * adding new blocks after this one.
@@ -404,7 +404,7 @@ export type IndividualBlock = {
     | [2, string | [number, string, string]]
     | [3, string | [number, string, string], [number, string] | string]
   >;
-  fields: Record<string, [string, null]>;
+  fields: Record<string, [string, string | null]>;
   parent: string | null;
   next: string | null;
   x: number;
