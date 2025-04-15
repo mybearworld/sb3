@@ -317,14 +317,24 @@ export function block(opcode: string, options?: BlockOptions): Block {
       block.blocks[baseOpcode].inputs[name] = [1, [input.type, input.value]];
       return;
     }
-    if (!input.value.first) {
-      return;
+    let value;
+    if (input.value instanceof Script) {
+      if (!input.value.first) {
+        return;
+      }
+      value = input.value.first;
+    } else {
+      value = [
+        input.value.type,
+        input.value.values[0],
+        input.value.values[1],
+      ] satisfies [number, string, string];
     }
     const maybeFallback =
       "fallback" in input && input.fallback ? input.fallback : undefined;
     block.blocks = {
       ...block.blocks,
-      ...input.value.blocks,
+      ...(input.value instanceof Script ? input.value.blocks : {}),
       ...(maybeFallback instanceof Script ? maybeFallback.blocks : {}),
     };
     if (
@@ -337,12 +347,12 @@ export function block(opcode: string, options?: BlockOptions): Block {
     block.blocks[baseOpcode].inputs[name] = maybeFallback
       ? [
           3,
-          input.value.first,
+          value,
           maybeFallback instanceof Script
             ? maybeFallback.first!
             : [maybeFallback.type, maybeFallback.value],
         ]
-      : [2, input.value.first];
+      : [2, value];
     return;
   });
   return block;
@@ -356,7 +366,10 @@ export type BlockOptions = {
   inputs?: Record<
     string,
     | { type: number; value: string }
-    | { value: Script; fallback?: { type: number; value: string } | Script }
+    | {
+        value: Script | { type: number; values: [string, string] };
+        fallback?: { type: number; value: string } | Script;
+      }
   >;
   /**
    * The fields that the block has. Defaults to none.
@@ -387,7 +400,9 @@ export type IndividualBlock = {
   opcode: string;
   inputs: Record<
     string,
-    [1, [number, string]] | [2, string] | [3, string, [number, string] | string]
+    | [1, [number, string]]
+    | [2, string | [number, string, string]]
+    | [3, string | [number, string, string], [number, string] | string]
   >;
   fields: Record<string, [string, null]>;
   parent: string | null;
