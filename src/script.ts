@@ -307,14 +307,22 @@ export function block(opcode: string, options?: BlockOptions): Block {
     base: baseOpcode,
   };
   Object.entries(inputs).forEach(([name, input]) => {
-    if (typeof input.value === "string") {
+    if (typeof input.value === "string" || Array.isArray(input.value)) {
       if (!("type" in input)) {
         // needed for typescript
         throw new Error(
           "A string has been passed as a value, without any type."
         );
       }
-      block.blocks[baseOpcode].inputs[name] = [1, [input.type, input.value]];
+      block.blocks[baseOpcode].inputs[name] = [
+        1,
+        [
+          input.type,
+          ...(typeof input.value === "string"
+            ? ([input.value] as const)
+            : input.value),
+        ],
+      ];
       return;
     }
     let value;
@@ -326,9 +334,10 @@ export function block(opcode: string, options?: BlockOptions): Block {
     } else {
       value = [
         input.value.type,
-        input.value.values[0],
-        input.value.values[1],
-      ] satisfies [number, string, string];
+        ...(typeof input.value.value === "string"
+          ? ([input.value.value] as const)
+          : input.value.value),
+      ] satisfies [number, string] | [number, string, string];
     }
     const maybeFallback =
       "fallback" in input && input.fallback ? input.fallback : undefined;
@@ -350,7 +359,12 @@ export function block(opcode: string, options?: BlockOptions): Block {
           value,
           maybeFallback instanceof Script
             ? maybeFallback.first!
-            : [maybeFallback.type, maybeFallback.value],
+            : [
+                maybeFallback.type,
+                ...(typeof maybeFallback.value === "string"
+                  ? ([maybeFallback.value] as const)
+                  : maybeFallback.value),
+              ],
         ]
       : [2, value];
     return;
@@ -365,10 +379,10 @@ export type BlockOptions = {
    */
   inputs?: Record<
     string,
-    | { type: number; value: string }
+    | { type: number; value: string | [string, string] }
     | {
-        value: Script | { type: number; values: [string, string] };
-        fallback?: { type: number; value: string } | Script;
+        value: Script | { type: number; value: string | [string, string] };
+        fallback?: { type: number; value: string | [string, string] } | Script;
       }
   >;
   /**
@@ -400,9 +414,13 @@ export type IndividualBlock = {
   opcode: string;
   inputs: Record<
     string,
-    | [1, [number, string]]
-    | [2, string | [number, string, string]]
-    | [3, string | [number, string, string], [number, string] | string]
+    | [1, [number, string] | [number, string, string]]
+    | [2, string | [number, string] | [number, string, string]]
+    | [
+        3,
+        string | [number, string] | [number, string, string],
+        [number, string] | [number, string, string] | string,
+      ]
   >;
   fields: Record<string, [string, string | null]>;
   parent: string | null;
