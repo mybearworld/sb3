@@ -21,6 +21,17 @@ export class Project {
    * browser.
    */
   public userAgent = "Created with https://jsr.io/@mbw/sb3";
+  /**
+   * The extensions the project depends on.
+   */
+  public extensions: string[] = [];
+  /**
+   * A mapping of third-party extensions to their URLs.
+   *
+   * This is a feature specific to TurboWarp and its mods. Projects which rely
+   * on this feature can not be uploaded to the Scratch website.
+   */
+  public extensionURLs: Record<string, string> = {};
 
   /**
    * Add a new target to the project.
@@ -60,7 +71,8 @@ export class Project {
         ...this.targets.map((target) => target.toJSON()),
       ],
       monitors: [],
-      extensions: [],
+      extensions: this.extensions,
+      extensionURLs: this.extensionURLs,
       meta: {
         semver: "3.0.0",
         vm: "2.3.0",
@@ -139,7 +151,8 @@ export class Project {
 export type JSONProject = {
   targets: JSONTarget[];
   monitors: unknown;
-  extensions: unknown;
+  extensions: string[];
+  extensionURLs: Record<string, string>;
   meta: {
     semver: "3.0.0";
     vm: string;
