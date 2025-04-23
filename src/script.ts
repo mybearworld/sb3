@@ -293,12 +293,12 @@ export function block(opcode: string, options?: BlockOptions): Block {
         y: 0,
         shadow: false,
         topLevel: false,
-        ...(options?.hasNextMutation !== undefined
+        ...(options?.mutation !== undefined
           ? {
               mutation: {
                 tagName: "mutation",
                 children: [],
-                hasnext: options.hasNextMutation ? "true" : "false",
+                ...options.mutation,
               },
             }
           : {}),
@@ -390,10 +390,9 @@ export type BlockOptions = {
    */
   fields?: Record<string, string | [string, string]>;
   /**
-   * Whether the block has a mutation has it to tell Scratch to (dis)allow
-   * adding new blocks after this one.
+   * The mutation a block has, if any.
    */
-  hasNextMutation?: boolean;
+  mutation?: Record<string, string>;
 };
 
 /**
@@ -429,9 +428,5 @@ export type IndividualBlock = {
   y: number;
   shadow: boolean;
   topLevel: boolean;
-  mutation?: {
-    tagName: "mutation";
-    children: [];
-    hasnext: "true" | "false";
-  };
+  mutation?: Record<string, [] | string>;
 };
